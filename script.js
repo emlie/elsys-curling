@@ -5,7 +5,7 @@ let table = document.querySelectorAll('.wrapTStoneData')[0];
 
 // FIREBASE
 let db = firebase.database();
-let positionDB = db.ref('position');
+let stoneDB = db.ref('stone');
 
 
 // Display database name
@@ -25,12 +25,17 @@ function getName(snapshot) {
   console.log(stoneData);
 }
 
+// add child
+stoneDB.push({
+  'position': [0, 1, 2],
+  'time': 0
+});
+
 
 // Show database data
 // when database changes (when new data is added), run function
-positionDB.on('child_added', getName);
+stoneDB.on('child_added', getName);
 
 
-// getName();
-
-console.log(positionDB);
+// getName(stoneDB[0]);
+// 8m på 4 sek => 2m per 1 sek i fraspark for steinen

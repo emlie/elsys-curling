@@ -1,6 +1,10 @@
+// jshint esversion: 6
+
 // DOM
 let dbName = document.querySelector('#dbName');
-let table = document.querySelectorAll('.wrapTStoneData')[0];
+let pPosition = document.querySelector('#pPosition');
+let pTime = document.querySelector('#pTime');
+let tStoneData = document.querySelector('#tStoneData');
 
 
 // FIREBASE
@@ -10,7 +14,6 @@ let stoneDB = db.ref('stone');
 
 // Display database name
 function getName(snapshot) {
-  console.log('dbName');
 
   // primary key
   let stone = snapshot.key;
@@ -18,11 +21,18 @@ function getName(snapshot) {
   // other data
   let stoneData = snapshot.val();
 
-  // display name
-  dbName.innerHTML = `${stone}`;
+  // display data
+  // show data in table
+  tStoneData.innerHTML += `
+  <tr>
+    <td>${stoneData.time}</td>
+    <td>${stoneData.position[0]}</td>
+    <td>${stoneData.position[1]}</td>
+    <td>${stoneData.position[2]}</td>
+  </tr>
+  `;
 
-  console.log(stone);
-  console.log(stoneData);
+  console.log(`stone: ${stone}`);
 }
 
 // add child

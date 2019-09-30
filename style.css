@@ -203,7 +203,7 @@ footer a {
 }
 
 .wrapAll {
-  width: 91%;
+  width: 91.6%;
 
   border: 0 solid red;
 
@@ -227,7 +227,7 @@ footer a {
   width: 20%;
   height: 100%;
 
-  border: 1 solid red;
+  border: 0 solid red;
 }
 
 .thead {

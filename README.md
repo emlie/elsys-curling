@@ -1,6 +1,6 @@
 # Elsys innovasjonsprosjekt 2019 – smart curlingstein
 ## Å gjøre
-- [ ] endre layout (vertikal 50-50)
+- [x] endre layout (vertikal 50-50)
 ## Links
 [Trello](https://trello.com/b/jJF8B3Qd/smart-curlingstein)
 <br>

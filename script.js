@@ -12,10 +12,70 @@ let pPosition = document.querySelector('#pPosition');
 let pTime = document.querySelector('#pTime');
 let tStoneData = document.querySelector('#tStoneData');
 
+let scoreHead = document.querySelector('#scoreHead');
+let scoreHome = document.querySelector('#scoreHome');
+let scoreVisitor = document.querySelector('#scoreVisitor');
+
 
 // FIREBASE
 let db = firebase.database();
 let stoneDB = db.ref('stone');
+
+
+
+
+
+// FILL SCORE TABLE
+function fillScoreBoard() {
+  console.log('fillScoreHead');
+
+  // head
+  for (let i = 1; i <= 10; i++) {
+    scoreHead.innerHTML += `
+    <div>
+      <p>${i}</p>
+    </div>
+    `
+  }
+
+  scoreHead.innerHTML += `
+  <div>
+    <p class="fat">total</p>
+  </div>
+  `
+
+
+  // home
+  for (let i = 1; i <= 10; i++) {
+    scoreHome.innerHTML += `
+    <div>
+      <p>${0}</p>
+    </div>
+    `
+  }
+
+  scoreHome.innerHTML += `
+  <div>
+    <p>00</p>
+  </div>
+  `
+
+
+  // visitor
+  for (let i = 1; i <= 10; i++) {
+    scoreVisitor.innerHTML += `
+    <div>
+      <p>${0}</p>
+    </div>
+    `
+  }
+
+  scoreVisitor.innerHTML += `
+  <div>
+    <p>00</p>
+  </div>
+  `
+}
 
 
 
@@ -65,3 +125,5 @@ stoneDB.push({
 // Show database data
 // when database changes (when new data is added), run function
 stoneDB.on('child_added', getStoneData);
+
+fillScoreBoard();

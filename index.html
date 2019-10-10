@@ -12,35 +12,67 @@
 
   <body>
 
-    <header>
-      <a href="#">
-        <img src="curling.png" alt="curling stone">
-      </a>
-      <a href="#" class="adj-header-a">
-        live curling
-      </a>
-    </header>
-
 
     <div class="wrapAll">
 
-      <div class="wrapGraphic">
-        <!-- JS -->
+      <div class="wrapLeft">
+        <header>
+          <a href="#">
+            <img src="curling.png" alt="curling stone">
+          </a>
+          <a href="#" class="adj-header-a">
+            live curling
+          </a>
+        </header>
+
+        <div class="wrapInfo">
+          <p>Total tid: 0 t 0 min</p>
+        </div>
+
+        <div class="wrapScore">
+          <div id="scoreHead" class="wrapScoreInfo">
+            <div>
+              <p class="fat">innings</p>
+            </div>
+            <!-- JS: numbers -->
+            <!-- JS: total -->
+          </div>
+          <div class="wrapScoreTeam">
+            <div id="scoreHome" class="wrapScoreInfo">
+              <div>
+                <p class="fat">home</p>
+              </div>
+              <!-- JS -->
+            </div>
+            <div id="scoreVisitor" class="wrapScoreInfo">
+              <div>
+                <p class="fat">visitor</p>
+              </div>
+              <!-- JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="wrapTable">
+          <div class="thead">
+            <p>t</p>
+            <p>x</p>
+            <p>y</p>
+            <p>z</p>
+          </div>
+          <div class="wrapTStoneData">
+            <table>
+              <tbody id="tStoneData">
+                <!-- JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      <div class="wrapTable">
-        <div class="thead">
-          <p>t</p>
-          <p>x</p>
-          <p>y</p>
-          <p>z</p>
-        </div>
-        <div class="wrapTStoneData">
-          <table>
-            <tbody id="tStoneData">
-              <!-- JS -->
-            </tbody>
-          </table>
+      <div class="wrapRight">
+        <div class="wrapGraphic">
+          <!-- JS -->
         </div>
       </div>
 
@@ -53,6 +85,7 @@
       </div>
       <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
     </footer>
+
 
   </body>
 

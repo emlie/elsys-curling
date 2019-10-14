@@ -334,9 +334,20 @@ footer a {
   height: 100%;
 
   margin: 0 auto;
-  padding: calc(var(--base)*5);
+  padding: calc(var(--base)*0);
 
   background: pink;
+}
+
+.line {
+  width: 100%;
+  height: calc(var(--base)*0.1);
+
+  border-top: 1px dotted black;
+
+  /* margin-top: calc(var(--base)*5); */
+
+  position: absolute;
 }
 
 .wrapTable {

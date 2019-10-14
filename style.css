@@ -330,24 +330,61 @@ footer a {
 }
 
 .wrapGraphic {
-  width: 80%;
+  width: 50%;
   height: 100%;
 
   margin: 0 auto;
   padding: calc(var(--base)*0);
 
-  background: pink;
+  background: transparent;
+
+  border-left: calc(var(--base)*0.15) solid black;
+  border-right: calc(var(--base)*0.15) solid black;
+}
+
+.hack {
+  width: calc(var(--base)*2);
+  height: calc(var(--base)*0.5);
+
+  background: black;
+
+  position: absolute;
 }
 
 .line {
   width: 100%;
   height: calc(var(--base)*0.1);
 
-  border-top: 1px dotted black;
+  border-top: 0 dotted var(--gray-lighter);
 
   /* margin-top: calc(var(--base)*5); */
 
   position: absolute;
+}
+
+.hog {
+  border-top:  calc(var(--base)*0.25) solid black;
+}
+
+.circle {
+  width: calc(var(--base)*10);
+  height: calc(var(--base)*10);
+
+  border-radius: 100%;
+
+  margin-top: calc(var(--base)*4);
+
+  position: absolute;
+
+  background: transparent;
+}
+
+.blue {
+  border: calc(var(--base)*1.25) solid var(--house-blue);
+}
+
+.red {
+  border: calc(var(--base)*1.25) solid var(--house-red);
 }
 
 .wrapTable {

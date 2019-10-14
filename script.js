@@ -161,20 +161,44 @@ stoneDB.push({
 
 
 
+// POSITION HACKS
+function posHack() {
+
+  console.log('posHack');
+
+  // get hacks
+  let topHack = document.querySelectorAll('.hack')[0];
+  let bottomHack = document.querySelectorAll('.hack')[1];
+
+  // get style
+  let hackStyleWidth = window.getComputedStyle(topHack).width;
+  let hackNumWidth = pxToNum(hackStyleWidth);
+
+  // set margin
+  topHack.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
+  topHack.style.marginLeft = `${(graphicNumWidth/2)-(hackNumWidth/2)}px`;
+
+  bottomHack.style.bottom = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
+  bottomHack.style.marginLeft = `${(graphicNumWidth/2)-(hackNumWidth/2)}px`;
+
+}
+
+
 // DRAW LINES
 function drawLines() {
   console.log('drawLines');
 
-  // add lines
+  // make lines
   for (var i = 0; i < 8; i++) {
     wrapGraphic.innerHTML += `<div class="line"></div>`;
   }
 
+  // get all lines (array)
   let allLines = document.querySelectorAll('.line');
 
   // set line width
   for (let line of allLines) {
-    line.style.width = `${graphicStyleWidth}`;
+    line.style.width = `${graphicNumWidth-2}px`;
   }
 
   // identified lines
@@ -188,7 +212,11 @@ function drawLines() {
   let bottomCenterRing = document.querySelectorAll('.line')[6];
   let bottomCenterToHog = document.querySelectorAll('.line')[7];
 
-  // set line margin
+  // style hog lines
+  topCenterToHog.classList.add('hog');
+  bottomCenterToHog.classList.add('hog');
+
+  // set margin
   topBackHack.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
   topBehindRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToBehindRing)/5})`;
   topCenterRing.style.marginTop = `calc(var(--base)*${(fracHeight*behindRingToCenter)/5})`;
@@ -199,15 +227,52 @@ function drawLines() {
   bottomCenterRing.style.bottom = `calc(var(--base)*${(fracHeight*behindRingToCenter)/5})`;
   bottomCenterToHog.style.bottom = `calc(var(--base)*${(fracHeight*centerToHog)/5})`;
 
-  // bottomBehindRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/10})`;
-  // bottomCenterRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/10})`;
-  console.log((fracHeight*backToHack)/10);
 }
 
 
 // MAKE HOUSES
 function makeHouses() {
   console.log('makeHouses');
+
+  // make circles
+  for (var i = 0; i < 4; i++) {
+    wrapGraphic.innerHTML += `<div class="circle"></div>`;
+  }
+
+  // get all circles (array)
+  let allCircles = document.querySelectorAll('.circle');
+
+  // identified circles
+  let topBlue = document.querySelectorAll('.circle')[0];
+  let topRed = document.querySelectorAll('.circle')[1];
+
+  let bottomBlue = document.querySelectorAll('.circle')[2];
+  let bottomRed = document.querySelectorAll('.circle')[3];
+
+  // set style
+  topBlue.classList.add('blue');
+  topBlue.style.width = `${45*2}px`; // from screen measurement (browser extension)
+  topBlue.style.height = topBlue.style.width
+  topBlue.style.marginTop = `calc(var(--base)*${(fracHeight*backToBehindRing)/8})`;
+  topBlue.style.marginLeft = `${(graphicNumWidth/2)-45}px`;
+
+  topRed.classList.add('red');
+  topRed.style.width = `${(45/2.25)*2}px`; // from screen measurement (browser extension)
+  topRed.style.height = topRed.style.width
+  topRed.style.marginTop = `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.6})`;
+  topRed.style.marginLeft = `${(graphicNumWidth/2)-(45/2.25)}px`;
+
+  bottomBlue.classList.add('blue');
+  bottomBlue.style.width = `${45*2}px`; // from screen measurement (browser extension)
+  bottomBlue.style.height = topBlue.style.width
+  bottomBlue.style.bottom = `calc(var(--base)*${(fracHeight*backToBehindRing)/8})`;
+  bottomBlue.style.marginLeft = `${(graphicNumWidth/2)-45}px`;
+
+  bottomRed.classList.add('red');
+  bottomRed.style.width = `${(45/2.25)*2}px`; // from screen measurement (browser extension)
+  bottomRed.style.height = topRed.style.width
+  bottomRed.style.bottom = `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.6})`;
+  bottomRed.style.marginLeft = `${(graphicNumWidth/2)-(45/2.25)}px`;
 }
 
 
@@ -224,5 +289,6 @@ fillScoreBoard();
 console.log(`graphicNumWidth: ${graphicNumWidth}; fracWidth: ${fracWidth}`);
 console.log(`graphicNumHeight: ${graphicNumHeight}; fracHeight: ${fracHeight}`);
 
+posHack();
 drawLines();
 makeHouses();

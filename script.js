@@ -49,6 +49,7 @@ let fracHeight = graphicNumHeight/rinkHeight;
 // FIREBASE
 let db = firebase.database();
 let stoneDB = db.ref('stone');
+let arduinoRevDB = db.ref('Test/Int')
 
 
 
@@ -164,7 +165,7 @@ stoneDB.push({
 // POSITION HACKS
 function posHack() {
 
-  console.log('posHack');
+  // console.log('posHack');
 
   // get hacks
   let topHack = document.querySelectorAll('.hack')[0];
@@ -175,10 +176,10 @@ function posHack() {
   let hackNumWidth = pxToNum(hackStyleWidth);
 
   // set margin
-  topHack.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
+  topHack.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/10})`;
   topHack.style.marginLeft = `${(graphicNumWidth/2)-(hackNumWidth/2)}px`;
 
-  bottomHack.style.bottom = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
+  bottomHack.style.bottom = `calc(var(--base)*${(fracHeight*backToHack)/10})`;
   bottomHack.style.marginLeft = `${(graphicNumWidth/2)-(hackNumWidth/2)}px`;
 
 }
@@ -186,7 +187,7 @@ function posHack() {
 
 // DRAW LINES
 function drawLines() {
-  console.log('drawLines');
+  // console.log('drawLines');
 
   // make lines
   for (var i = 0; i < 8; i++) {
@@ -217,22 +218,22 @@ function drawLines() {
   bottomCenterToHog.classList.add('hog');
 
   // set margin
-  topBackHack.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
-  topBehindRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToBehindRing)/5})`;
-  topCenterRing.style.marginTop = `calc(var(--base)*${(fracHeight*behindRingToCenter)/5})`;
-  topCenterToHog.style.marginTop = `calc(var(--base)*${(fracHeight*centerToHog)/5})`;
+  topBackHack.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/6})`;
+  topBehindRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToBehindRing)/6})`;
+  topCenterRing.style.marginTop = `calc(var(--base)*${(fracHeight*behindRingToCenter)/6})`;
+  topCenterToHog.style.marginTop = `calc(var(--base)*${(fracHeight*centerToHog)/4.5})`;
 
-  bottomBackHack.style.bottom = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
-  bottomBehindRing.style.bottom = `calc(var(--base)*${(fracHeight*backToBehindRing)/5})`;
-  bottomCenterRing.style.bottom = `calc(var(--base)*${(fracHeight*behindRingToCenter)/5})`;
-  bottomCenterToHog.style.bottom = `calc(var(--base)*${(fracHeight*centerToHog)/5})`;
+  bottomBackHack.style.bottom = `calc(var(--base)*${(fracHeight*backToHack)/6})`;
+  bottomBehindRing.style.bottom = `calc(var(--base)*${(fracHeight*backToBehindRing)/6})`;
+  bottomCenterRing.style.bottom = `calc(var(--base)*${(fracHeight*behindRingToCenter)/6})`;
+  bottomCenterToHog.style.bottom = `calc(var(--base)*${(fracHeight*centerToHog)/4.5})`;
 
 }
 
 
 // MAKE HOUSES
 function makeHouses() {
-  console.log('makeHouses');
+  // console.log('makeHouses');
 
   // make circles
   for (var i = 0; i < 4; i++) {
@@ -276,12 +277,48 @@ function makeHouses() {
 }
 
 
+// POSITION HOUSE SVGS
+function posSVG() {
+
+  // get svgs
+  let topHouse = document.querySelectorAll('.house')[0];
+  let bottomHouse = document.querySelectorAll('.house')[1];
+
+  // bottomHouse.style.display = 'none';
+
+  // style
+  topHouse.style.width = `${(fracWidth*rBlueRing)/2}px`;
+  topHouse.style.marginLeft = `${graphicNumWidth/3.325}px`;
+  topHouse.style.marginTop = `calc(var(--base)*${(fracHeight*backToBehindRing)/11.5})`;
+
+  bottomHouse.style.width = `${(fracWidth*rBlueRing)/2}px`;
+  bottomHouse.style.marginLeft = `${graphicNumWidth/3.325}px`;
+  bottomHouse.style.bottom = `calc(var(--base)*${(fracHeight*backToBehindRing)/11.5})`;
+
+}
+
+
 
 
 
 // Show database data
 // when database changes (when new data is added), run function
 stoneDB.on('child_added', getStoneData);
+
+console.log(arduinoRevDB.key);
+
+arduinoRevDB.on('child_added', (snapshot) => {
+  dataEntry = snapshot.val();
+
+  tStoneData.innerHTML += `
+  <tr>
+    <td>empty</td>
+    <td>empty</td>
+    <td>${dataEntry.Data1}</td>
+    <td>${dataEntry.Data2}</td>
+  </tr>
+  `;
+})
 
 fillScoreBoard();
 
@@ -291,4 +328,5 @@ console.log(`graphicNumHeight: ${graphicNumHeight}; fracHeight: ${fracHeight}`);
 
 posHack();
 drawLines();
-makeHouses();
+// makeHouses();
+posSVG();

@@ -342,6 +342,14 @@ footer a {
   border-right: calc(var(--base)*0.15) solid black;
 }
 
+.wrapGraphic img {
+  width: calc(var(--base)*20);
+
+  border: 0 solid cyan;
+
+  position: absolute;
+}
+
 .hack {
   width: calc(var(--base)*2);
   height: calc(var(--base)*0.5);

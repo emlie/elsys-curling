@@ -165,13 +165,49 @@ stoneDB.push({
 function drawLines() {
   console.log('drawLines');
 
-  // add line
-  wrapGraphic.innerHTML += `<div class="line"></div>`;
+  // add lines
+  for (var i = 0; i < 8; i++) {
+    wrapGraphic.innerHTML += `<div class="line"></div>`;
+  }
 
-  // line behind ring
-  let behindRing = document.querySelectorAll('.line')[0];
-  behindRing.style.width = `${graphicStyleWidth}`;
-  behindRing.style.marginTop = `calc(var(--base)*${fracHeight*backToHack})`;
+  let allLines = document.querySelectorAll('.line');
+
+  // set line width
+  for (let line of allLines) {
+    line.style.width = `${graphicStyleWidth}`;
+  }
+
+  // identified lines
+  let topBackHack = document.querySelectorAll('.line')[0];
+  let topBehindRing = document.querySelectorAll('.line')[1];
+  let topCenterRing = document.querySelectorAll('.line')[2];
+  let topCenterToHog = document.querySelectorAll('.line')[3];
+
+  let bottomBackHack = document.querySelectorAll('.line')[4];
+  let bottomBehindRing = document.querySelectorAll('.line')[5];
+  let bottomCenterRing = document.querySelectorAll('.line')[6];
+  let bottomCenterToHog = document.querySelectorAll('.line')[7];
+
+  // set line margin
+  topBackHack.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
+  topBehindRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToBehindRing)/5})`;
+  topCenterRing.style.marginTop = `calc(var(--base)*${(fracHeight*behindRingToCenter)/5})`;
+  topCenterToHog.style.marginTop = `calc(var(--base)*${(fracHeight*centerToHog)/5})`;
+
+  bottomBackHack.style.bottom = `calc(var(--base)*${(fracHeight*backToHack)/5})`;
+  bottomBehindRing.style.bottom = `calc(var(--base)*${(fracHeight*backToBehindRing)/5})`;
+  bottomCenterRing.style.bottom = `calc(var(--base)*${(fracHeight*behindRingToCenter)/5})`;
+  bottomCenterToHog.style.bottom = `calc(var(--base)*${(fracHeight*centerToHog)/5})`;
+
+  // bottomBehindRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/10})`;
+  // bottomCenterRing.style.marginTop = `calc(var(--base)*${(fracHeight*backToHack)/10})`;
+  console.log((fracHeight*backToHack)/10);
+}
+
+
+// MAKE HOUSES
+function makeHouses() {
+  console.log('makeHouses');
 }
 
 
@@ -189,3 +225,4 @@ console.log(`graphicNumWidth: ${graphicNumWidth}; fracWidth: ${fracWidth}`);
 console.log(`graphicNumHeight: ${graphicNumHeight}; fracHeight: ${fracHeight}`);
 
 drawLines();
+makeHouses();

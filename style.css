@@ -29,6 +29,9 @@
   --blue-lighter: #62DBFB;
   --blue-lightest: #C8EFFE;
 
+  --house-blue: #0000FF;
+  --house-red: #FF0000;
+
 
   /* sizes */
   --base: 1rem;
@@ -160,15 +163,19 @@ table {
 footer {
   width: 100%;
 
-  margin-top: calc(var(--base)*2.5);
+  /* margin-top: calc(var(--base)*2.5); */
+  bottom: 0;
 
-  padding: calc(var(--base)*0);
+  padding-left: calc(var(--base)*6);
+  padding-bottom: calc(var(--base)*1.5);
 
   border-top: calc(var(--base)*0.00) solid black;
 
+  position: absolute;
+
   display: flex;
   flex-flow: column;
-  align-items: center;
+  align-items: flex-start;
   align-content: center;
   justify-content: center;
 
@@ -221,8 +228,7 @@ footer a {
   justify-content: space-between;
 }
 
-.wrapLeft,
-.wrapRight {
+.wrapLeft {
   width: 50%;
   height: 100%;
 
@@ -311,6 +317,18 @@ footer a {
   grid-template: repeat(2, 1fr) / 1fr;
 }
 
+.wrapRight {
+  width: 50%;
+  height: 100%;
+
+  border: 0 solid blue;
+
+  position: absolute;
+
+  top: 0;
+  right: 0;
+}
+
 .wrapGraphic {
   width: 80%;
   height: 100%;
@@ -362,6 +380,8 @@ footer a {
 .wrapTStoneData {
   width: 100%;
   height: calc(var(--base)*26.25);
+
+  margin: 0;
 
   overflow: auto;
 

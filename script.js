@@ -189,7 +189,6 @@ function posHack() {
 
 
 // DRAW LINES
-/*
 function drawLines() {
   // console.log('drawLines');
 
@@ -233,7 +232,6 @@ function drawLines() {
   bottomCenterToHog.style.bottom = `calc(var(--base)*${(fracHeight*centerToHog)/4.5})`;
 
 }
-*/
 
 
 /*
@@ -338,6 +336,6 @@ console.log(`graphicNumHeight: ${graphicNumHeight}; fracHeight: ${fracHeight}`);
 
 
 posHack();
-// drawLines();
+drawLines();
 // makeHouses();
 posSVG();

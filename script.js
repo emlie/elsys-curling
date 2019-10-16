@@ -48,8 +48,9 @@ let fracHeight = graphicNumHeight/rinkHeight;
 
 // FIREBASE
 let db = firebase.database();
-let stoneDB = db.ref('stone');
-let arduinoRevDB = db.ref('Test/Int')
+// let stoneDB = db.ref('stone');
+// let arduinoRevDB = db.ref('Test/Int')
+let revDB = db.ref('gyroData/position');
 
 
 
@@ -123,6 +124,7 @@ function fillScoreBoard() {
 
 
 // Display database name
+/*
 function getStoneData(snapshot) {
 
   // primary key
@@ -157,6 +159,7 @@ stoneDB.push({
   'position': [0, 1, 2],
   'time': 0
 });
+*/
 
 
 
@@ -186,6 +189,7 @@ function posHack() {
 
 
 // DRAW LINES
+/*
 function drawLines() {
   // console.log('drawLines');
 
@@ -229,8 +233,10 @@ function drawLines() {
   bottomCenterToHog.style.bottom = `calc(var(--base)*${(fracHeight*centerToHog)/4.5})`;
 
 }
+*/
 
 
+/*
 // MAKE HOUSES
 function makeHouses() {
   // console.log('makeHouses');
@@ -275,6 +281,7 @@ function makeHouses() {
   bottomRed.style.bottom = `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.6})`;
   bottomRed.style.marginLeft = `${(graphicNumWidth/2)-(45/2.25)}px`;
 }
+*/
 
 
 // POSITION HOUSE SVGS
@@ -303,30 +310,34 @@ function posSVG() {
 
 // Show database data
 // when database changes (when new data is added), run function
-stoneDB.on('child_added', getStoneData);
+// console.log(arduinoRevDB.key);
 
-console.log(arduinoRevDB.key);
-
-arduinoRevDB.on('child_added', (snapshot) => {
+// from Arduino Uno Wifi Rev 2 IMU LSD LSM6DS3 => Firebase => table
+revDB.on('child_added', (snapshot) => {
   dataEntry = snapshot.val();
 
   tStoneData.innerHTML += `
   <tr>
     <td>empty</td>
-    <td>empty</td>
-    <td>${dataEntry.Data1}</td>
-    <td>${dataEntry.Data2}</td>
+    <td>${dataEntry.x}</td>
+    <td>${dataEntry.y}</td>
+    <td>${dataEntry.z}</td>
   </tr>
   `;
-})
+});
+
+// stoneDB.on('child_added', getStoneData);
+
 
 fillScoreBoard();
+
 
 // GRAPHIC
 console.log(`graphicNumWidth: ${graphicNumWidth}; fracWidth: ${fracWidth}`);
 console.log(`graphicNumHeight: ${graphicNumHeight}; fracHeight: ${fracHeight}`);
 
+
 posHack();
-drawLines();
+// drawLines();
 // makeHouses();
 posSVG();

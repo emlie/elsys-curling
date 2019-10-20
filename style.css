@@ -45,8 +45,8 @@
   --smooth-light-shadow: 0 2px 4px var(--bg-color), 0 2px 4px rgba(0,0,0,0.24);
 
   /* for JS */
-  --colNum: 0;
-  --rowNum: 0;
+  --top: 0;
+  --bottom: 0;
   --left: 0;
 }
 
@@ -472,4 +472,20 @@ footer a {
   background: var(--gray-lighter);
 
   font-size: calc(var(--base)*1.25);
+}
+
+.stone {
+  /*
+  width: calc(var(--base)*1);
+  height: calc(var(--base)*1);
+  */
+
+  margin-top: var(--top);
+  margin-left: var(--left);
+
+  bottom: var(--bottom);
+
+  border: 0 solid blue;
+
+  position: absolute;
 }

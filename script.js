@@ -21,6 +21,11 @@ let behindRingToCenter = 6;
 let centerToHog = 21;
 let hogToHog = 72;
 
+// CURRENT STONE
+// even number = yellow
+// odd number = red
+let currentStone = 0;
+
 
 // DOM
 let dbName = document.querySelector('#dbName');
@@ -76,14 +81,14 @@ function fillScoreBoard() {
     <div>
       <p>${i}</p>
     </div>
-    `
+    `;
   }
 
   scoreHead.innerHTML += `
   <div>
     <p class="fat">total</p>
   </div>
-  `
+  `;
 
 
   // home
@@ -92,14 +97,14 @@ function fillScoreBoard() {
     <div>
       <p>${0}</p>
     </div>
-    `
+    `;
   }
 
   scoreHome.innerHTML += `
   <div>
     <p>00</p>
   </div>
-  `
+  `;
 
 
   // visitor
@@ -108,14 +113,14 @@ function fillScoreBoard() {
     <div>
       <p>${0}</p>
     </div>
-    `
+    `;
   }
 
   scoreVisitor.innerHTML += `
   <div>
     <p>00</p>
   </div>
-  `
+  `;
 }
 
 
@@ -306,6 +311,68 @@ function posSVG() {
 
 
 
+// MAKE A STONE
+class Stone {
+  constructor(color, startPos) {
+    this.color = color; // @string: red or yellow
+    this.startPos = startPos; // @string: top or bottom
+  }
+
+  make() {
+    let stone = `
+      <svg height="25" width="25" id="stone${currentStone}" class="stone">
+        <circle cx="11.5" cy="11.5" r="10" stroke="black" stroke-width="3" fill="${this.color}" />
+      </svg>
+    `;
+
+    // add to DOM
+    wrapGraphic.innerHTML += stone;
+
+    // get stone
+    let thisStone = document.querySelector(`#stone${currentStone}`);
+
+    // position
+    thisStone.style.setProperty("--left", `${(graphicNumWidth/2)-(45/3.85)}px`);
+
+    if (this.startPos == 'top') {
+      thisStone.style.setProperty('--bottom', 'auto');
+      thisStone.style.setProperty(`--${this.startPos}`, `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.15})`);
+    } else if (this.startPos == 'bottom') {
+      thisStone.style.setProperty('--top', 'auto');
+      thisStone.style.setProperty(`--${this.startPos}`, `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.2})`);
+    }
+  }
+}
+
+
+
+
+
+// ADD A STONE
+function addStone(startPos) {
+
+  let currentColor = ''
+
+  currentStone += 1;
+
+  // every other stone is red, starting at 1
+  if ((currentStone % 2) == 0) {
+    currentColor = 'yellow';
+  } else {
+    currentColor = 'red';
+  }
+
+  let newStone = new Stone(currentColor, startPos);
+
+  newStone.make();
+
+
+}
+
+
+
+
+
 // Show database data
 // when database changes (when new data is added), run function
 // console.log(arduinoRevDB.key);
@@ -339,3 +406,6 @@ posHack();
 drawLines();
 // makeHouses();
 posSVG();
+
+addStone('top');
+addStone('bottom');

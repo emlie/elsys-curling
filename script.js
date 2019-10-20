@@ -21,10 +21,12 @@ let behindRingToCenter = 6;
 let centerToHog = 21;
 let hogToHog = 72;
 
-// CURRENT STONE
+// CURRENT GAME
 // even number = yellow
 // odd number = red
-let currentStone = 0;
+let currentStoneNum = 0;
+let currentPos = 'bottom';
+let currentStone;
 
 
 // DOM
@@ -38,6 +40,8 @@ let scoreHome = document.querySelector('#scoreHome');
 let scoreVisitor = document.querySelector('#scoreVisitor');
 
 let wrapGraphic = document.querySelectorAll('.wrapGraphic')[0];
+
+let btnAdd = document.querySelector('#btnAdd');
 
 
 // COMPUTED STYLES
@@ -313,14 +317,17 @@ function posSVG() {
 
 // MAKE A STONE
 class Stone {
+
   constructor(color, startPos) {
     this.color = color; // @string: red or yellow
     this.startPos = startPos; // @string: top or bottom
   }
 
+
   make() {
+
     let stone = `
-      <svg height="25" width="25" id="stone${currentStone}" class="stone">
+      <svg height="25" width="25" id="stone${currentStoneNum}" class="stone">
         <circle cx="11.5" cy="11.5" r="10" stroke="black" stroke-width="3" fill="${this.color}" />
       </svg>
     `;
@@ -329,19 +336,22 @@ class Stone {
     wrapGraphic.innerHTML += stone;
 
     // get stone
-    let thisStone = document.querySelector(`#stone${currentStone}`);
+    currentStone = document.querySelector(`#stone${currentStoneNum}`);
+    // console.log(currentStone.id);
 
     // position
-    thisStone.style.setProperty("--left", `${(graphicNumWidth/2)-(45/3.85)}px`);
+    currentStone.style.setProperty("--left", `${(graphicNumWidth/2)-(45/3.85)}px`);
 
     if (this.startPos == 'top') {
-      thisStone.style.setProperty('--bottom', 'auto');
-      thisStone.style.setProperty(`--${this.startPos}`, `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.15})`);
+      currentStone.style.setProperty('--bottom', 'auto');
+      currentStone.style.setProperty(`--${this.startPos}`, `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.15})`);
     } else if (this.startPos == 'bottom') {
-      thisStone.style.setProperty('--top', 'auto');
-      thisStone.style.setProperty(`--${this.startPos}`, `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.2})`);
+      currentStone.style.setProperty('--top', 'auto');
+      currentStone.style.setProperty(`--${this.startPos}`, `calc(var(--base)*${(fracHeight*behindRingToCenter)/3.2})`);
     }
+
   }
+
 }
 
 
@@ -351,12 +361,14 @@ class Stone {
 // ADD A STONE
 function addStone(startPos) {
 
-  let currentColor = ''
+  let currentColor = '';
 
-  currentStone += 1;
+  currentStoneNum += 1;
+
+  console.log(currentStoneNum);
 
   // every other stone is red, starting at 1
-  if ((currentStone % 2) == 0) {
+  if ((currentStoneNum % 2) == 0) {
     currentColor = 'yellow';
   } else {
     currentColor = 'red';
@@ -364,8 +376,37 @@ function addStone(startPos) {
 
   let newStone = new Stone(currentColor, startPos);
 
+  // add stone to DOM
   newStone.make();
 
+}
+
+
+
+
+
+// ANIMATE STONE
+function moveStone(stone) {
+
+  console.log(`move ${stone.id}`);
+
+  // animate with WAAPI
+  let kf = [
+    /*
+    {
+      transform: `translateX(${variable}px)
+                  translateY(${(-1)*variable}px)`
+    }
+    */
+  ];
+
+  let speed = {
+    duration: 5000, // ms
+    iterations: 1,
+    direction: 'forward'
+  };
+
+  stone.animate(kf, speed);
 
 }
 
@@ -398,8 +439,8 @@ fillScoreBoard();
 
 
 // GRAPHIC
-console.log(`graphicNumWidth: ${graphicNumWidth}; fracWidth: ${fracWidth}`);
-console.log(`graphicNumHeight: ${graphicNumHeight}; fracHeight: ${fracHeight}`);
+// console.log(`graphicNumWidth: ${graphicNumWidth}; fracWidth: ${fracWidth}`);
+// console.log(`graphicNumHeight: ${graphicNumHeight}; fracHeight: ${fracHeight}`);
 
 
 posHack();
@@ -407,5 +448,10 @@ drawLines();
 // makeHouses();
 posSVG();
 
-addStone('top');
-addStone('bottom');
+// addStone('top');
+// addStone('bottom');
+
+btnAdd.addEventListener('click', () => {
+  addStone('bottom');
+  moveStone(currentStone);
+});

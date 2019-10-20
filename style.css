@@ -174,10 +174,10 @@ footer {
   position: absolute;
 
   display: flex;
-  flex-flow: column;
+  flex-flow: row;
   align-items: flex-start;
   align-content: center;
-  justify-content: center;
+  justify-content: flex-start;
 
   font-family: var(--font-main-1);
   font-weight: normal;
@@ -195,6 +195,50 @@ footer a {
   font-size: inherit;
 
   text-decoration: underline;
+}
+
+footer div {
+  margin-left: calc(var(--base)*1.5);
+}
+
+footer div:first-child {
+  margin-left: 0;
+}
+
+button {
+  width: auto;
+  height: auto;
+
+  padding: calc(var(--base)*0.5) calc(var(--base)*1);
+
+  border: none;
+  border-radius: calc(var(--base)*0.5);
+
+  background: var(--gray-lighter);
+
+  font-family: var(--font-main-1);
+  font-weight: normal;
+  font-size: calc(var(--base)*1.5);
+
+  color: var(--primary-color);
+
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: calc(var(--base)*0.05);
+
+  cursor: pointer;
+
+  transition: var(--smooth);
+}
+
+button:hover {
+  background: var(--gray-lightest);
+}
+
+button:active {
+  box-shadow: var(--smooth-light-shadow);
+  transform: translateY(0.25rem);
 }
 
 

@@ -334,7 +334,7 @@ button:active {
   width: 100%;
   height: 100%;
 
-  background: lightblue;
+  background: var(--blue-lightest);
 
   display: flex;
   flex-flow: column;
@@ -463,7 +463,10 @@ button:active {
 }
 
 .thead p {
+  margin-left: calc(var(--base)*1);
   padding: calc(var(--base)*1.25) calc(var(--base)*0.5);
+
+  border: 0 solid red;
 
   font-family: var(--font-main-1);
   font-weight: bold;
@@ -485,7 +488,7 @@ button:active {
 
   overflow: auto;
 
-  border: 1 solid red;
+  border: 0 solid red;
 
   font-family: var(--font-main-1);
   font-weight: normal;
@@ -501,6 +504,7 @@ button:active {
 
 .wrapTStoneData td {
   padding: calc(var(--base)*1.25) calc(var(--base)*0.5);
+  border: 0 solid red;
 }
 
 .wrapTStoneData thead td {

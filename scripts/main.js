@@ -23,8 +23,8 @@ const math = create(all, config)
 // https://www.npmjs.com/package/mathjs-simple-integral
 // math.import(require('mathjs-simple-integral'));
 
-let Calculess = require('calculess');
-let Calc = Calculess.prototype;
+// let Calculess = require('calculess');
+// let Calc = Calculess.prototype;
 
 
 // RINK DIMENSIONS IN FEET

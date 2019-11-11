@@ -28,8 +28,8 @@ const math = create(all, config)
 
 
 // RINK DIMENSIONS IN FEET
-let rinkWidth = 15;
-let rinkHeight = 142;
+let rinkWidth = 15; // 4.572 m
+let rinkHeight = 142; // 43.28 m
 
 let rBlueRing = 12;
 let rWhiteRing = 8;
@@ -80,8 +80,27 @@ let fracHeight = graphicNumHeight/rinkHeight;
 let db = firebase.database();
 // let stoneDB = db.ref('stone');
 // let arduinoRevDB = db.ref('Test/Int')
-let revDB = db.ref('gyroData/position');
+let revDB = db.ref('gyroData');
 let revAccDB = db.ref('accData');
+
+
+// ALL ALL IMU DATA
+let allAX = [0, 0];
+let allAY = [0, 0];
+// let allAZ = [];
+
+let allPX = [0];
+let allPY = [0];
+// let allPZ = [];
+
+// vX = 0; // velocity x
+// pX = 0; // position x
+
+// vY = 0; // velocity y
+// pY = 0; // position y
+
+// vZ = 0; // velocity z
+// pZ = 0; // position z
 
 
 
@@ -442,20 +461,22 @@ function moveStone(stone) {
 // console.log(arduinoRevDB.key);
 
 // from Arduino Uno Wifi Rev 2 IMU LSD LSM6DS3 => Firebase => table
-revAccDB.on('child_added', (snapshot) => {
-  dataEntry = snapshot.val();
+function updateTable() {
+  revAccDB.on('child_added', (snapshot) => {
+    dataEntry = snapshot.val();
 
-  tStoneData.innerHTML += `
-  <tr>
-    <td>empty</td>
-    <td>${dataEntry.aX}</td>
-    <td>${dataEntry.aY}</td>
-    <td>${dataEntry.aZ}</td>
-  </tr>
-  `;
-});
+    tStoneData.innerHTML += `
+    <tr>
+      <td>empty</td>
+      <td>${dataEntry.aXF3db}</td>
+      <td>${dataEntry.aYF3db}</td>
+      <td>${dataEntry.aZ}</td>
+    </tr>
+    `;
+  });
 
-// stoneDB.on('child_added', getStoneData);
+  // stoneDB.on('child_added', getStoneData);
+}
 
 
 
@@ -483,6 +504,49 @@ function integrate() {
 
 
 
+// STORE DATA
+/*
+function storeValues(iterable, all, single) {
+  iterable.forEach((element) => {
+    all.push(element/mass);
+    single = element;
+  });
+}
+*/
+
+
+// GET VELOCITY
+function getVelocity(range, acc, time) {
+
+  // let prevA = allAX[allAX.length - 1];
+  // let deltaA = (acc - prevA)/2;
+
+  // console.log(`currA: ${acc} | prevA: ${prevA}`);
+
+  // return (acc * deltaA) + prevA;
+  return acc * time; // average velocity
+  // return (acc * time * range);
+}
+
+
+// GET POSITON
+function getPosition(range, acc, velocity, time, list) {
+  // veiformel 2:
+  // s = v_0*t + (1/2)at^2
+  let prevA = list[list.length - 1];
+  let deltaA = (acc - prevA)/2;
+  return velocity*time + (1/2)*deltaA*time^2;
+  // return velocity*time + (1/2)*acc*time^2;
+  // return (velocity * time) + ((1/2)*acc*range*(time^2));
+  // return (velocity*time*range) + (1/2)*acc*(time*range)^2;
+  // return (velocity * time * range) + ((1/2) * acc * ((time * range)^2));
+}
+
+
+
+
+
+// RUN FUNCTIONS
 fillScoreBoard();
 
 
@@ -499,7 +563,228 @@ posSVG();
 // addStone('top');
 // addStone('bottom');
 
+updateTable();
+
 btnAdd.addEventListener('click', () => {
   addStone('bottom');
   // moveStone(currentStone);
 });
+
+
+/*
+// FIND POSITION OF STONE FOR EACH DATA ENTRY (FROM PYTHON)
+revAccDB.on('child_added', (snapshot) => {
+
+  mass = 0.5; // [kg]
+  deltaT = 1; // delta time t (sec)
+
+  // acceleration in force G=mg [m*m/s^2]
+  // divide each element in aXG by mass to get actual acceleration
+  aXG = []; // acceleration x
+  aX = 0;
+  pX = 0;
+
+  aYG = []; // acceleration y
+  aY = 0;
+  pY = 0;
+
+  aZG = []; // acceleration z
+  aZ = 0;
+  pZ = 0;
+
+  dataEntry = snapshot.val();
+
+  // push data to arrays
+  aXG.push(dataEntry.aX);
+  aYG.push(dataEntry.aY);
+  aZG.push(dataEntry.aZ);
+
+  // push all data from IMU to new array
+  storeValues(aXG, allAX, aX);
+  storeValues(aYG, allAY, aY);
+  storeValues(aZG, allAZ, aZ);
+
+  // number of measurements
+  dataEntries = allAX.length;
+
+  // get velocities
+  getVelocity(vX, dataEntries, aX, deltaT);
+  getVelocity(vY, dataEntries, aY, deltaT);
+  getVelocity(vZ, dataEntries, aZ, deltaT);
+
+  // get positions
+  getPosition(pX, dataEntries, aX, vX, deltaT);
+  getPosition(pY, dataEntries, aY, vY, deltaT);
+  getPosition(pZ, dataEntries, aZ, vZ, deltaT);
+
+  // push position data to array
+  allPX.push(pX);
+  allPY.push(pY);
+  allPZ.push(pZ);
+
+
+  // console.log(`number of data entries: ${dataEntries}`);
+
+  // console.log(`aXG: ${aXG}`);
+  // console.log(`aYG: ${aYG}`);
+  // console.log(`aYG: ${aZG}`);
+
+  // console.log(`aX: ${allAX}`);
+  // console.log(`aY: ${allAY}`);
+  // console.log(`aZ: ${allAZ}`);
+
+  console.log(`pX: ${allPX}`);
+  console.log(`pY: ${allPY}`);
+  console.log(`pZ: ${allPZ}`);
+
+  console.log(' ');
+
+});
+*/
+
+
+const mass = 0.209; // [kg]
+const deltaT = 0.91; // // 55 entries in 1 min ≈ 1 [s]
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+let dataEntries = 0;
+
+let aX = 0; // acceleration
+let aY = 0;
+
+let vX = 0; // velocity [m/s]
+let pX = 0; // position
+
+let vY = 0;
+let pY = 0;
+
+// FIND VELOCITY AND POSITION OF STONE FOR EACH DATA ENTRY
+revAccDB.on('child_added', (snapshot) => {
+
+  let dataEntry = snapshot.val();
+
+  let aXG = dataEntry.aXF3db; // acceleration in force G=mg [m*m/s^2]
+  let aX = aXG/mass; // acceleration in [m/s^2]
+
+  let aYG = dataEntry.aYF3db;
+  let aY = aYG/mass;
+
+  // add to array
+  allAX.push(aX);
+  allAY.push(aY);
+
+  // pop last from array
+  // allAX = allAX.slice(0, allAX.length - 1);
+
+  // console.log(aX);
+  // console.log(aY);
+
+  dataEntries = allAX.length;
+
+  // console.log(`BEFORE vX: ${vX} | vY: ${vY}`);
+  // console.log(`BEFORE pX: ${pX} | pY: ${pY}`);
+
+  // get actual velocities
+  vX = getVelocity(dataEntries, aX, deltaT);
+  vY = getVelocity(dataEntries, aY, deltaT);
+
+  // get actual positions
+  // pX += getPosition(dataEntries, aX, vX, deltaT);
+  // pY += getPosition(dataEntries, aY, vY, deltaT);
+
+  /*
+  let prevAX = allAX[allAX.length - 1];
+  let deltaAX = (aX - prevAX)/2;
+
+  let prevAY = allAY[allAY.length - 1];
+  let deltaAY = (aY - prevAY)/2;
+
+  pX = vX*deltaT + (1/2)*deltaAX*deltaT^2;
+  pY = vY*deltaT + (1/2)*deltaAY*deltaT^2;
+
+  console.log(allPX, allPY);
+  */
+
+  /*
+  let prevAX = allAX[allAX.length - 1];
+  let prevAY = allAY[allAY.length - 1];
+  let s_0X = allPX.reduce(reducer);
+  let s_0Y = allPY.reduce(reducer);
+  pX += (1/4)*(aX + prevAX)*deltaT^2 + vX*deltaT;
+  pY += (1/4)*(aY + prevAY)*deltaT^2 + vY*deltaT;
+  */
+
+  pX = getPosition(dataEntries, aX, vX, deltaT, allAX);
+  pY = getPosition(dataEntries, aY, vY, deltaT, allAY);
+
+  // log values
+  allPX.push(pX);
+  allPY.push(pY);
+
+  // console.log(`data entries: ${dataEntries}`);
+  // console.log(`allPositions: ${allPositions}`);
+  // console.log(`allAX: ${allAX} | length: ${allAX.length}`);
+  // console.log(`allAY: ${allAY}; length: ${allAY.length}`);
+  // console.log(`NOW vX: ${vX} | vY: ${vY}`);
+  // console.log(`NOW pX: ${pX} | pY: ${pY}`);
+  // console.log(`last position: ${allPositions[allPositions.length - 1]}`);
+
+});
+
+
+// AFTER PUSHING ALL DATA FROM IMU TO NEW ARRAYS
+revAccDB.on('value', (snapshot) => {
+
+  // dataEntries = allAX.length;
+
+  // vX = 0; // velocity
+  // pX = 0; // position
+
+  // vY = 0;
+  // pY = 0;
+
+  // get actual velocities
+  // vX += getVelocity(dataEntries, aX, deltaT);
+  // vY += getVelocity(dataEntries, aY, deltaT);
+
+  // get actual positions
+  // pX += getPosition(dataEntries, aX, vX, deltaT);
+  // pY += getPosition(dataEntries, aY, vY, deltaT);
+
+  // log values
+  // allPositions.push([pX, pY]);
+
+  console.log(`data entries: ${dataEntries}`);
+  // console.log(`allPositions: ${allPositions}`);
+  // console.log(`allAX: ${allAX}`);
+  // console.log(`allAY: ${allAY}`);
+  console.log(`LAST vX: ${vX} | vY: ${vY}`);
+  console.log(`LAST pX: ${pX} | pY: ${pY}`);
+  // console.log(`allAX: ${allAX}`);
+  // console.log(`allAY: ${allAY}`);
+  // console.log(`allAZ: ${allAZ}`);
+  // console.log('');
+  // console.log(`allPX: ${allPX}`);
+  // console.log(`allPY: ${allPY}`);
+  // console.log(`allPZ: ${allPZ}`);
+});
+
+
+/*
+* x,y: 3.8 , -3.39
+* x,y: 4.5, -1.75
+* x,y: 4.45, -5.35
+* x,y: 5.19, -7.9
+*/
+
+/*
+* x,y: 0.20, 3.8
+* x,y: 6.89, -5.35
+* x,y: 5.75, -18
+*/
+
+/* 10 METERS
+* x,y: 5.19, -19
+* x,y: 10.1, 23.25
+* x,y: -4.04, -16.15
+*/

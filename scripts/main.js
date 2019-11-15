@@ -5,27 +5,6 @@
 https://hackernoon.com/arduino-serial-data-796c4f7d27ce
 */
 
-/*
-import { create, all } from 'mathjs'
-
-// create a mathjs instance with configuration
-const config = {
-  epsilon: 1e-12,
-  matrix: 'Matrix',
-  number: 'number',
-  precision: 64,
-  predictable: false,
-  randomSeed: null
-}
-const math = create(all, config)
-*/
-
-// https://www.npmjs.com/package/mathjs-simple-integral
-// math.import(require('mathjs-simple-integral'));
-
-// let Calculess = require('calculess');
-// let Calc = Calculess.prototype;
-
 
 // RINK DIMENSIONS IN FEET
 let rinkWidth = 15; // 4.572 m
@@ -84,9 +63,24 @@ let revDB = db.ref('gyroData');
 let revAccDB = db.ref('accData');
 
 
+const mass = 0.209; // [kg] uten lokk (364.1 g med lokk) | 209 g bare power bank
+const deltaT = 0.91; // // 55 entries in 1 min ≈ 1 [s]
+
+let dataEntries = 0;
+
+let aX = 0; // acceleration [m/s^2]
+let aY = 0;
+
+let vX = 0; // velocity [m/s]
+let pX = 0; // position
+
+let vY = 0;
+let pY = 0;
+
+
 // ALL ALL IMU DATA
-let allAX = [0, 0];
-let allAY = [0, 0];
+let allAX = [0];
+let allAY = [0];
 // let allAZ = [];
 
 let allPX = [0];
@@ -467,10 +461,10 @@ function updateTable() {
 
     tStoneData.innerHTML += `
     <tr>
-      <td>empty</td>
+      <td>${dataEntry.aX}</td>
       <td>${dataEntry.aXF3db}</td>
       <td>${dataEntry.aYF3db}</td>
-      <td>${dataEntry.aZ}</td>
+      <td>${dataEntry.aY}</td>
     </tr>
     `;
   });
@@ -505,14 +499,12 @@ function integrate() {
 
 
 // STORE DATA
-/*
 function storeValues(iterable, all, single) {
   iterable.forEach((element) => {
     all.push(element/mass);
     single = element;
   });
 }
-*/
 
 
 // GET VELOCITY
@@ -530,7 +522,7 @@ function getVelocity(range, acc, time) {
 
 
 // GET POSITON
-function getPosition(range, acc, velocity, time, list) {
+function getPosition2(range, acc, velocity, time, list) {
   // veiformel 2:
   // s = v_0*t + (1/2)at^2
   let prevA = list[list.length - 1];
@@ -539,6 +531,15 @@ function getPosition(range, acc, velocity, time, list) {
   // return velocity*time + (1/2)*acc*time^2;
   // return (velocity * time) + ((1/2)*acc*range*(time^2));
   // return (velocity*time*range) + (1/2)*acc*(time*range)^2;
+  // return (velocity * time * range) + ((1/2) * acc * ((time * range)^2));
+}
+
+function getPosition(range, acc, velocity, time) {
+  // veiformel 2:
+  // s = v_0*t + (1/2)at^2
+  // return velocity*time + (1/2)*acc*time^2;
+  // return (velocity * time) + ((1/2)*acc*range*(time^2));
+  return (velocity*time*range) + (1/2)*acc*(time*range)^2;
   // return (velocity * time * range) + ((1/2) * acc * ((time * range)^2));
 }
 
@@ -571,56 +572,57 @@ btnAdd.addEventListener('click', () => {
 });
 
 
-/*
+
 // FIND POSITION OF STONE FOR EACH DATA ENTRY (FROM PYTHON)
+/*
 revAccDB.on('child_added', (snapshot) => {
 
-  mass = 0.5; // [kg]
-  deltaT = 1; // delta time t (sec)
+  // let mass = 0.5; // [kg]
+  // let deltaT = 1; // delta time t (sec)
 
   // acceleration in force G=mg [m*m/s^2]
   // divide each element in aXG by mass to get actual acceleration
-  aXG = []; // acceleration x
-  aX = 0;
-  pX = 0;
+  let aXG = []; // acceleration x
+  let aX = 0;
+  let pX = 0;
 
-  aYG = []; // acceleration y
-  aY = 0;
-  pY = 0;
+  let aYG = []; // acceleration y
+  let aY = 0;
+  let pY = 0;
 
-  aZG = []; // acceleration z
-  aZ = 0;
-  pZ = 0;
+  // let aZG = []; // acceleration z
+  // let aZ = 0;
+  // let pZ = 0;
 
-  dataEntry = snapshot.val();
+  let dataEntry = snapshot.val();
 
   // push data to arrays
   aXG.push(dataEntry.aX);
   aYG.push(dataEntry.aY);
-  aZG.push(dataEntry.aZ);
+  // aZG.push(dataEntry.aZ);
 
   // push all data from IMU to new array
   storeValues(aXG, allAX, aX);
   storeValues(aYG, allAY, aY);
-  storeValues(aZG, allAZ, aZ);
+  // storeValues(aZG, allAZ, aZ);
 
   // number of measurements
-  dataEntries = allAX.length;
+  let dataEntries = allAX.length;
 
   // get velocities
-  getVelocity(vX, dataEntries, aX, deltaT);
-  getVelocity(vY, dataEntries, aY, deltaT);
-  getVelocity(vZ, dataEntries, aZ, deltaT);
+  let newVX = getVelocity(vX, dataEntries, aX, deltaT);
+  let newVY = getVelocity(vY, dataEntries, aY, deltaT);
+  // getVelocity(vZ, dataEntries, aZ, deltaT);
 
   // get positions
   getPosition(pX, dataEntries, aX, vX, deltaT);
   getPosition(pY, dataEntries, aY, vY, deltaT);
-  getPosition(pZ, dataEntries, aZ, vZ, deltaT);
+  // getPosition(pZ, dataEntries, aZ, vZ, deltaT);
 
   // push position data to array
   allPX.push(pX);
   allPY.push(pY);
-  allPZ.push(pZ);
+  // allPZ.push(pZ);
 
 
   // console.log(`number of data entries: ${dataEntries}`);
@@ -643,22 +645,23 @@ revAccDB.on('child_added', (snapshot) => {
 */
 
 
-const mass = 0.209; // [kg]
-const deltaT = 0.91; // // 55 entries in 1 min ≈ 1 [s]
-const reducer = (accumulator, currentValue) => accumulator + currentValue;
+// const mass = 0.209; // [kg]
+// const deltaT = 0.91; // // 55 entries in 1 min ≈ 1 [s]
+// const reducer = (accumulator, currentValue) => accumulator + currentValue;
 
-let dataEntries = 0;
+// let dataEntries = 0;
 
-let aX = 0; // acceleration
-let aY = 0;
+// let aX = 0; // acceleration
+// let aY = 0;
 
-let vX = 0; // velocity [m/s]
-let pX = 0; // position
+// let vX = 0; // velocity [m/s]
+// let pX = 0; // position
 
-let vY = 0;
-let pY = 0;
+// let vY = 0;
+// let pY = 0;
 
 // FIND VELOCITY AND POSITION OF STONE FOR EACH DATA ENTRY
+/*
 revAccDB.on('child_added', (snapshot) => {
 
   let dataEntry = snapshot.val();
@@ -688,9 +691,14 @@ revAccDB.on('child_added', (snapshot) => {
   vX = getVelocity(dataEntries, aX, deltaT);
   vY = getVelocity(dataEntries, aY, deltaT);
 
+
   // get actual positions
   // pX += getPosition(dataEntries, aX, vX, deltaT);
   // pY += getPosition(dataEntries, aY, vY, deltaT);
+  // pX = getPosition(dataEntries, aX, vX, deltaT);
+  // pX = getPosition(dataEntries, aY, vY, deltaT);
+  */
+
 
   /*
   let prevAX = allAX[allAX.length - 1];
@@ -714,12 +722,12 @@ revAccDB.on('child_added', (snapshot) => {
   pY += (1/4)*(aY + prevAY)*deltaT^2 + vY*deltaT;
   */
 
-  pX = getPosition(dataEntries, aX, vX, deltaT, allAX);
-  pY = getPosition(dataEntries, aY, vY, deltaT, allAY);
+  // pX = getPosition2(dataEntries, aX, vX, deltaT, allAX);
+  // pY = getPosition2(dataEntries, aY, vY, deltaT, allAY);
 
   // log values
-  allPX.push(pX);
-  allPY.push(pY);
+  // allPX.push(pX);
+  // allPY.push(pY);
 
   // console.log(`data entries: ${dataEntries}`);
   // console.log(`allPositions: ${allPositions}`);
@@ -728,6 +736,40 @@ revAccDB.on('child_added', (snapshot) => {
   // console.log(`NOW vX: ${vX} | vY: ${vY}`);
   // console.log(`NOW pX: ${pX} | pY: ${pY}`);
   // console.log(`last position: ${allPositions[allPositions.length - 1]}`);
+
+// });
+
+revAccDB.on('child_added', snapshot => {
+
+  let dataEntry = snapshot.val();
+
+  // filtered data
+  let aXG = dataEntry.aXF3db; // acceleration in force G=mg [m*m/s^2]
+  // let aXG = dataEntry.aX;
+  let aX = aXG/mass; // acceleration in [m/s^2]
+
+  let aYG = dataEntry.aYF3db;
+  let aY = aYG/mass;
+
+  // add to array
+  allAX.push(aX);
+  allAY.push(aY);
+
+  dataEntries = allAX.length;
+
+  // get velocities
+  vX = getVelocity(dataEntries, aX, deltaT);
+  vY = getVelocity(dataEntries, aY, deltaT);
+
+  // get positions
+  // pX += (vX*deltaT*dataEntries) + (1/2)*aX*(deltaT*dataEntries)^2 - 2;
+  // pY += (vY*deltaT*dataEntries) + (1/2)*aY*(deltaT*dataEntries)^2;
+  // pX += (vX*deltaT)/dataEntries + (1/2)*aX*(deltaT*dataEntries)^2 - 1;
+  // pX += (vX * deltaT) + ((1/2) * aX * ((deltaT * dataEntries)^2));
+  // pY += (vY*deltaT)/dataEntries + (1/2)*aY*(deltaT*dataEntries)^2;
+
+  pX += getPosition2(dataEntries, aX, vX, deltaT, allAX) - 0.5;
+  pY += getPosition2(dataEntries, aY, vY, deltaT, allAY) - 0.5;
 
 });
 
@@ -760,6 +802,7 @@ revAccDB.on('value', (snapshot) => {
   // console.log(`allAY: ${allAY}`);
   console.log(`LAST vX: ${vX} | vY: ${vY}`);
   console.log(`LAST pX: ${pX} | pY: ${pY}`);
+  // console.log(`LAST DIV pX: ${pX/2} | pY: ${pY}`);
   // console.log(`allAX: ${allAX}`);
   // console.log(`allAY: ${allAY}`);
   // console.log(`allAZ: ${allAZ}`);

@@ -315,6 +315,7 @@ function addStone(startPos) {
 // console.log(arduinoRevDB.key);
 
 // from Arduino Uno Wifi Rev 2 IMU LSD LSM6DS3 => Firebase => table
+/*
 function updateTable() {
   revAccDB.on('child_added', (snapshot) => {
     dataEntry = snapshot.val();
@@ -329,6 +330,7 @@ function updateTable() {
     `;
   });
 }
+*/
 
 
 
@@ -410,6 +412,16 @@ revAccDB.on('child_added', snapshot => {
   // get positions
   pX += getPosition2(dataEntries, aX, vX, deltaT, allAX) - 0.5;
   pY += getPosition2(dataEntries, aY, vY, deltaT, allAY) - 0.5;
+
+  // update table
+  tStoneData.innerHTML += `
+  <tr>
+    <td>${aX} | ${aY}</td>
+    <td>${aXG} | ${aYG}</td>
+    <td>${vX} | ${vY}</td>
+    <td>${pX} | ${pY}</td>
+  </tr>
+  `;
 
 });
 
